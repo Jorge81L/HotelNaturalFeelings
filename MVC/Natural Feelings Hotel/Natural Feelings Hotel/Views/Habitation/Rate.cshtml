@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Rates Page";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Hotel.API
+@{
+    Habitation ratesAPI = new Habitation();
+    List<RateModel> rateModelList = ratesAPI.ReadRate().GetAwaiter().GetResult();
+}
+<div class="inner">
+    <div>
+        <header id="header">
+            <a asp-action="" asp-controller="" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+        </header>
+    </div>
+
+    <div class="text-center">
+        <h2 class="display-4">Tarifas</h2>
+    </div>
+
+    <div class="my-4">
+        @foreach (var item in rateModelList)
+        {
+            <div class="row m-0 p-0 row-cols-lg-2 row-cols-sm-1">
+                <div class="col-lg-5 col-sm-12 p-0 my-2">
+                    <img class="align-content-center" src="~/galery/@Html.DisplayFor(modelItem => item.Image.IdImage)@Html.DisplayFor(modelItem => item.Image.ImageFormat)" style="width: 100%" >
+                </div>
+                <div class="col-lg-6 col-sm-12 my-auto">
+                    <h5><strong>@Html.DisplayFor(modelItem => item.Name)</strong></h5>
+                    <p class="text-justify mx-lg-12">@Html.DisplayFor(modelItem => item.Description)</p>
+                    <h6>Caracteristicas</h6>
+                    <p class="text-justify mx-lg-12 ">@Html.DisplayFor(modelItem => item.Features)</p>
+                    <h6 class="text-justify mx-lg-12 ">Precio: <strong style="color:black">$@Html.DisplayFor(modelItem => item.Price)</strong></h6>
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

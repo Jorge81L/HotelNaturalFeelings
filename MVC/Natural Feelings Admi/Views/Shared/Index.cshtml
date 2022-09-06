@@ -1,0 +1,52 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@model Natural_Feelings_Admi.Models.AdmiModel
+@{
+	Hotel homeAPI = new Hotel();
+	HotelModel homeModel = homeAPI.ReadHome().GetAwaiter().GetResult();
+
+}
+<div class="inner">
+	<div>
+		<header id="header">
+			<a asp-action="HomeView" asp-controller="Home" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+		</header>
+	</div>
+
+	<div class="text-center">
+        <h2 class="display-4">Inicio de Sesion</h2>
+    </div>
+
+    <div class="text-center">
+        @if (ViewBag.validation != null)
+        {
+            @if (!ViewBag.validation)
+            {
+                <div class="alert alert-danger" role="alert">
+                    Su usuario y contraseña son incorrectas o no se encuentra autentificado 
+                </div>
+            }
+        }
+    </div>
+
+    <form asp-controller="Login" asp-action="loginUser" method="post">
+	    <div class="mt-5">
+		    <div class="col-md-12 text-center">
+                <label for="admiuser" class="form-label text">Usuario</label>
+                <input asp-for="Name" type="text" class="form-control text-center" required id="Name" name="Name" placeholder="Nombre del usuario">
+            </div>
+            <div class="col-md-12 mt-3 text-center">
+                <label for="pass" class="form-label">Contraseña</label>
+                <input asp-for="Password" type="password" class="form-control text-center" required id="Password" name="Password" placeholder="Contraseña del usuario">
+            </div>
+            <div class="col-12 w-auto mx-3 text-center my-3">
+                <button type="submit" class="btn btn-primary text-center mt-3">Iniciar Sesion</button>
+            </div>
+	    </div>
+    </form>
+</div>
+

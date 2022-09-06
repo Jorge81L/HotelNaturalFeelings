@@ -1,0 +1,347 @@
+﻿@{
+    ViewData["Title"] = "AdminTemporadas";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@model Natural_Feelings_Admi.Models.OfferModel
+
+
+<div class="inner">
+    <div class="text-center">
+        <h2 class="display-4">Administrar Ofertas</h2> <br>
+        <input type="image" class="btn" data-toggle="modal" data-target="#miModal3" src="~/img/new-document.png" height="50" width="60" />
+    </div>
+    <div class="text-center">
+        @if (ViewBag.result == "false")
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede eliminar
+            </div>
+        }
+        else if (ViewBag.result == "true")
+        {
+            <div class="alert alert-success" role="alert">
+                Eliminado con éxito
+            </div>
+        }
+        @if (ViewBag.resultcrear == "false")
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede crear
+            </div>
+        }
+        else if (ViewBag.resultcrear == "true")
+        {
+            <div class="alert alert-success" role="alert">
+                Creado con éxito
+            </div>
+        }
+        @if (ViewBag.resultedit == false)
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede editar
+            </div>
+        }
+        else if (ViewBag.resultedit == true)
+        {
+            <div class="alert alert-success" role="alert">
+                Editado con éxito
+            </div>
+        }
+    </div>
+    <div class="table-responsive bg-white m-2">
+        <table id="RateTable" class="table table-hover text-center">
+            <thead>
+                <tr>
+
+                    <th class="text-center" scope="col">Id</th>
+                    <th class="text-center" scope="col">Descripcion</th>
+                    <th class="text-center" scope="col">Fecha Inicial</th>
+                    <th class="text-center" scope="col">Fecha Final</th>
+                    <th class="text-center" scope="col">Editar</th>
+                </tr>
+            </thead>
+            <tbody id="tablaOfertas">
+
+                @foreach (OfferModel item in ViewBag.Offer)
+                {
+                    <tr>
+                        <td>@item.Id_Offer</td>
+                        <td>@item.Description</td>
+                        <td>@item.StartDate.ToString("dd-MM-yyyy")</td>
+                        <td>@item.EndDate.ToString("dd-MM-yyyy")</td>
+                        <td>
+                            <input type="image" class="btn" data-id="@item.Id_Offer" onclick="buscarOferta(@item.Id_Offer);" data-toggle="modal" data-target="#miModal" src="~/img/editar.png" height="50" width="60" />
+                            <input type="image" class="btn" data-id="@item.Id_Offer" onclick="buscarOferta2(@item.Id_Offer);" data-toggle="modal" data-target="#miModal2" src="~/img/delete.png" height="50" width="60" />
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="miModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Actualizar Ofertas</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Admin" asp-action="EditOffer" enctype="multipart/form-data" runat="server">
+                    <div class="m-1">
+                        <div class="row justify-content-center p-2 rounded">
+                            <label class="col-3">Codigo: </label>
+                            <input type="text" id="inputid" class="form-control col-6" asp-for="@Model.Id_Offer" readonly>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="m-auto">Descripción:</label>
+                            <textarea class="form-control" id="inputdescripcion" rows="5" cols="50" asp-for="@Model.Description" required></textarea>
+
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Descuento: </label>
+                            <input type="number" id="descuento" class="form-control col-6" asp-for="@Model.DiscountPrice" required>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fehca Inicio: </label>
+                            <input type="date" id="fechainicio"  class="form-control col-6" asp-for="@Model.StartDate" required>
+                              <input id="hidden" type="hidden" name="fechaAporte" />
+                        </div>
+
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Final: </label>
+                            <input type="date" id="fechafinal"  class="form-control col-6" asp-for="@Model.EndDate" required>
+                        </div>
+                        <div class="row my-2 p-0">
+                            <div class="col-4 text-center">
+                                <label for="img2" class="">Imagen actual</label>
+                                <input type="text" id="idImage" asp-for=@Model.Image.IdImage hidden />
+                                <img id="img2" class="row m-auto" src="~/assets/select.svg" style="border-style: dotted; width: 100%" />
+                            </div>
+                            <div class="col-8 m-auto">
+                                <label class="custom-file-label form-control-lg" id="label" for="imgName">Nueva imagen</label>
+                                <input type="file" runat="server" class="p-0 custom-file-input" accept=".png, .jpg, .svg" id="imgName" asp-for="@Model.Image.ImageForm" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancelar" />
+                        <input type="submit" id="actualizar" class="btn btn-primary" value="Actualizar" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="miModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Eliminar Ofertas</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Admin" asp-action="DeleteOffer">
+                    <div class="m-1">
+                        <div class="row justify-content-center p-2 rounded">
+                            <label class="col-3">Codigo: </label>
+                            <input type="text" id="inputid2" class="form-control col-6" asp-for="@Model.Id_Offer" readonly>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="m-auto">Descripción:</label>
+                            <textarea readonly class="form-control" id="inputdescripcion2" rows="5" cols="50" asp-for="@Model.Description"></textarea>
+
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Descuento: </label>
+                            <input type="text" id="descuento2" class="form-control col-6" readonly asp-for="@Model.DiscountPrice">
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Inicio: </label>
+                            <input type="date" id="fechainicio2" class="form-control col-6" readonly asp-for="@Model.StartDate">
+                        </div>
+
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Final: </label>
+                            <input type="date" id="fechafinal2" class="form-control col-6" readonly asp-for="@Model.EndDate">
+                        </div>
+                        <div class="row justify-content-center my-2 p-0">
+                            <div class="col-4 text-center">
+                                <label for="image" class="">Imagen actual</label>
+                                <img id="img1" class="row m-auto" src="~/assets/select.svg" style="border-style: dotted; width: 100%" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancelar" />
+                        <input type="submit" id="eliminar" class="btn btn-primary" value="Eliminar" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div id="miModal3" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Crear Ofertas</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Admin" asp-action="CreateOffer" enctype="multipart/form-data" runat="server">
+                    <div class="m-1">
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="m-auto">Descripción:</label>
+                            <textarea class="form-control" id="rateDescription" rows="5" cols="50" asp-for="@Model.Description" required></textarea>
+
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Descuento(%): </label>
+                            <input type="number" id="nombre" class="form-control col-6" asp-for="@Model.DiscountPrice" required>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Inicio: </label>
+                            <input type="date" id="fechainicio3"  class="form-control col-6" asp-for="@Model.StartDate" required>
+                            <input id="hidden3" type="hidden" name="fechaAporte" />
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Final: </label>
+                            <input type="date" id="fechafinal3"  class="form-control col-6" asp-for="@Model.EndDate" required>
+                        </div>
+                        <div class="row my-2 p-0">
+                            <div class="col-4 text-center">
+                                <label for="img3" class="">Imagen actual</label>
+                                <input type="text" id="idImage3" asp-for=@Model.Image.IdImage hidden />
+                                <img id="img3" class="row m-auto" src="~/assets/select.svg" style="border-style: dotted; width: 100%" />
+                            </div>
+                            <div class="col-8 m-auto">
+                                <label class="custom-file-label form-control-lg" id="label" for="imgName3">Nueva imagen</label>
+                                <input type="file" runat="server" class="p-0 custom-file-input" accept=".png, .jpg, .svg" id="imgName3" asp-for="@Model.Image.ImageForm" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancelar" />
+                        <input type="submit" id="crear" class="btn btn-primary" value="Crear" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#img2').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgName").change(function() {
+        readURL(this);
+    });
+    $("#imgName").change(function() {
+        $('#idImage').val("changed")
+        readURL(this);
+    });
+
+</script>
+
+<script language="JavaScript">
+    function readURL2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#image').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imageName").change(function() {
+        readURL2(this);
+    });
+
+
+</script>
+
+<script language="JavaScript">
+    function readURL3(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#img3').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgName3").change(function() {
+        readURL3(this);
+    });
+
+    $("#imgName3").change(function() {
+        $('#idImage3').val("changed")
+        readURL3(this);
+    });
+</script>
+
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
+    //Poner fecha de hoy en los input date
+    let now = new Date();
+    let day = ("0" + now.getDate()).slice(-2);
+    let month = ("0" + (now.getMonth() + 1)).slice(-2);
+    let today2 = now.getFullYear() + "-" + (month) + "-" + (day);
+    $("input[type=date]").val(today2);
+
+    //bloquear fechas para crear temporadas
+    let today = new Date().toISOString().split("T")[0];
+    $('#fechainicio3').attr("min",today);
+    const hiddenInput = document.querySelector('#hidden3');
+    document.querySelector('#fechainicio3')
+        .addEventListener('change', (event) => {
+            hiddenInput.value = event.target.value;
+		    $('#fechafinal3').val(hiddenInput.value);
+            $("#fechafinal3").attr("min", hiddenInput.value);        
+        });
+
+    //bloquear fechas segun la fecha inicio
+    const hiddenInput2 = document.querySelector('#hidden');
+    document.querySelector('#fechainicio')
+        .addEventListener('change', (event) => {
+            hiddenInput2.value = event.target.value;
+            $('#fechafinal').val(hiddenInput.value);
+            $("#fechafinal").attr("min", hiddenInput2.value);
+ 
+        });       
+</script>

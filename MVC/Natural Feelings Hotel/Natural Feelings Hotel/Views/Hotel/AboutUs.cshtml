@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Hotel.API
+@{
+    Hotel aboutUsAPI = new Hotel();
+    HotelModel aboutUsModel = aboutUsAPI.getInfoAboutUs().GetAwaiter().GetResult();
+    String actualImage = "/galery/paseo.jpg";
+}
+<div class="inner">
+    <div>
+        <header id="header">
+            <a asp-action="" asp-controller="" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+        </header>
+    </div>
+
+    <div class="text-center">
+        <h2 class="display-4">Sobre Nosotros</h2>
+    </div>
+
+    <div class="text-center">
+        <p>@aboutUsModel.AboutUS</p>
+    </div>
+
+    <div class="my-4">
+        <div class="row m-0 p-0 row-cols-lg-2 row-cols-sm-1">
+            <div class="col-lg-6 col-sm-12 p-0 " id="probando">
+                <img src="@actualImage" style="width:100%">
+            </div>
+            <div class="col-lg-6 col-sm-12 my-auto">
+                <a href="javascript:changeImage1()"><img class="actualImage" src="/galery/paseo.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage2()"><img class="my-1" src="/galery/paseo2.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage3()"><img class="my-1" src="/galery/rio.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage4()"><img class="my-1" src="/galery/bungee.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage5()"><img class="my-1" src="/galery/bungee2.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage6()"><img class="my-1" src="/galery/rafting.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage7()"><img class="my-1" src="/galery/termal.jpg" width="125" height="100"></a>
+                <a href="javascript:changeImage8()"><img class="my-1" src="/galery/termal2.jpg" width="125" height="100"></a>
+            </div>
+        </div>
+    </div>
+</div>
+

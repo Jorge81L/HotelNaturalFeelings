@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Offer";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Hotel.API
+@{
+    Hotel offerAPI = new Hotel();
+}
+<div class="inner">
+    <div>
+        <header id="header">
+            <a asp-action="" asp-controller="" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+        </header>
+    </div>
+
+    <div class="text-center">
+        <h2 class="display-4">Oferta</h2>
+    </div>
+
+    <div class="my-4">
+		<div class="row m-0 p-0 row-cols-lg-2 row-cols-sm-1">
+			<div class="col-lg-6 col-sm-12 p-0">
+				@{
+                    var base64 = Convert.ToBase64String(ViewBag.Offer.Image.ImageContent);
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                <img src="@imgSrc" style="width: 100%;" />
+			</div>
+			<div class="col-lg-6 col-sm-12 p-0 my-auto">
+				<p>@ViewBag.Offer.Description</p>
+                <h5>Codigo: @ViewBag.Offer.DiscountPrice</h5>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,227 @@
+﻿@{
+    string ViewTitle = "Administrar facilidades";
+}
+@model Natural_Feelings_Admi.Models.FacilityModel
+<div class="container">
+    <div class="row p-0 m-0">
+        <div class="col-12 text-center">
+            <h3 class="display-4">@ViewTitle</h3>
+        </div>
+    </div>
+    <div class="row p-0 m-0 justify-content-center">
+        <div class="col-lg-3 col-12 text-center" style="border:dotted 1px; padding: 0.5em;">
+            <h4>Agregar una nueva</h4>
+            <input type="image" class="btn" data-toggle="modal" data-target="#createModal" src="~/img/new-document.png" height="50" width="60" />
+        </div>
+    </div>
+    <div class="row p-0 m-0">
+        <div class="col-12 text-center">
+            <div class="table-responsive bg-white m-2">
+                <table id="RateTable" class="table table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Imagen</th>
+                            <th class="text-center" scope="col">Descripcion</th>
+                            <th class="text-center" scope="col">Editar/Borrar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaOfertas">
+                        @foreach (FacilityModel item in ViewBag.facilities)
+                        {
+                            var base64 = Convert.ToBase64String(item.Image.ImageContent);
+                            var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                            <tr>
+                                <td><img src="@imgSrc" style="width: 5em;" /></td>
+                                <td>@item.Description</td>
+                                <td>
+                                    @{
+                                        string jsonFacility = "{" +
+                                        "'id': " + item.FacilityId + "," +
+                                        "'description': '" + item.Description + "', " +
+                                        "'idImage': '" + item.Image.IdImage + "', " +
+                                        "'image': '" + imgSrc + "' " +
+                                        "}";
+                                    }
+                                    <input type="image" class="btn" onclick="cargarEditarModal(@jsonFacility);" data-toggle="modal" data-target="#updateModal" src="~/img/editar.png" height="50" width="60" />
+                                    <input type="image" class="btn" onclick="cargarBorrarModal(@jsonFacility);" data-toggle="modal" data-target="#deleteModal" src="~/img/delete.png" height="50" width="60" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Crear-->
+<div id="createModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Agregar facilidad</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Hotel" asp-action="CreateFacility" enctype="multipart/form-data" runat="server">
+                    <div class="modal-body border-0">
+                        <div class="container">
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center my-auto">
+                                    <label for="description" class="">Descripción</label>
+                                </div>
+                                <div class="col-8 text-center">
+                                    <textarea class="form-control" id="descriptionCreate" rows=4 asp-for="@Model.Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center">
+                                    <label for="imageRoom" class="">
+                                        Imagen actual
+                                    </label>
+                                    <img id="createImage" class="row m-auto" src="~/assets/select.svg" alt="Imagen de facilidad" style="border-style: dotted; width: 100%" />
+                                </div>
+                                <div class="col-8 m-auto">
+                                    <label class="custom-file-label form-control-lg" for="facilityImage">Nueva imagen</label>
+                                    <input type="file" runat="server" class="p-0 custom-file-input" id="facilityImage" asp-for=@Model.Image.ImageForm />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar-->
+<div id="updateModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Editar facilidad</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Hotel" asp-action="UpdateFacility" enctype="multipart/form-data" runat="server">
+                    <input type="number" id="idUpdate" asp-for=@Model.FacilityId hidden/>
+                    <input type="text" id="idImageUpdate" asp-for=@Model.Image.IdImage hidden/>
+                    <div class="modal-body border-0">
+                        <div class="container">
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center my-auto">
+                                    <label for="description" class="">Descripción</label>
+                                </div>
+                                <div class="col-8 text-center">
+                                    <textarea class="form-control" id="descriptionUpdate" rows=4 asp-for="@Model.Description"></textarea>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center">
+                                    <label for="imageUpdate" class="">
+                                        Imagen actual
+                                    </label>
+                                    <img id="imageUpdate" class="row m-auto" src="~/assets/select.svg" alt="Imagen de facilidad" style="border-style: dotted; width: 100%" />
+                                </div>
+                                <div class="col-8 m-auto">
+                                    <label class="custom-file-label form-control-lg" for="facilityImage">Nueva imagen</label>
+                                    <input type="file" runat="server" class="p-0 custom-file-input" id="imageUpdateInput" asp-for=@Model.Image.ImageForm />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Borrar-->
+<div id="deleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Eliminar facilidad</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Hotel" asp-action="DeleteFacility" enctype="multipart/form-data" runat="server">
+                    <input type="number" id="deleteId" asp-for=@Model.FacilityId hidden/>
+                    <div class="modal-body border-0">
+                        <div class="container">
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center my-auto">
+                                    <label for="description" class="">Descripción</label>
+                                </div>
+                                <div class="col-8 text-center">
+                                    <textarea class="form-control" id="descriptionDelete" rows=4 asp-for="@Model.Description" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center">
+                                    <label for="deleteImage" class="">
+                                        Imagen actual
+                                    </label>
+                                    <img id="deleteImage" class="row m-auto" src="~/assets/select.svg" alt="Imagen de facilidad" style="border-style: dotted; width: 100%" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cargarEditarModal = (item) => {
+        $('#idUpdate').val(item.id)
+        $('#descriptionUpdate').val(item.description)
+        $('#idImageUpdate').val(item.idImage)
+        $('#imageUpdate').attr("src", item.image)
+    }
+
+    const cargarBorrarModal = (item) => {
+        $('#deleteId').val(item.id)
+        $('#descriptionDelete').val(item.description)
+        $('#deleteImage').attr("src", item.image)
+    }
+</script>
+
+
+<script>
+    const readURL = (input) => {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#createImage').attr('src', e.target.result);
+                    $('#imageUpdate').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };//readURL
+
+        $("#imageUpdateInput").change(function () {
+            $('#idImageUpdate').val("changed")
+            readURL(this);
+        });
+        $("#facilityImage").change(function () {
+            readURL(this);
+        });
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>

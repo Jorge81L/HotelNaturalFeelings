@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "AdminTemporadas";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@model Natural_Feelings_Admi.Models.SeasonModel
+@{
+
+}
+<div class="inner">
+    <div class="text-center">
+        @if (ViewBag.result == "false")
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede eliminar debido a que está asignada a una Tarifa
+            </div>
+        }else if (ViewBag.result == "true")
+       {
+            <div class="alert alert-success" role="alert">
+                Eliminado con éxito
+            </div>
+       }
+        @if (ViewBag.result3 == "false")
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede crear
+            </div>
+        }else if (ViewBag.result3 == "true")
+       {
+            <div class="alert alert-success" role="alert">
+                Creado con éxito
+            </div>
+       }
+        @if (ViewBag.resultedit2 == "false")
+        {
+
+            <div class="alert alert-danger" role="alert">
+                No se puede editar
+            </div>
+        }else if (ViewBag.resultedit2 == "true")
+       {
+            <div class="alert alert-success" role="alert">
+                Editado con éxito
+            </div>
+       }
+
+    </div>
+
+
+    <div class="table-responsive bg-white m-2">
+        <table id="RateTable" class="table table-hover text-center">
+            <thead>
+                <tr>
+
+                    <th class="text-center" scope="col">Id</th>
+                    <th class="text-center" scope="col">Nombre</th>
+                    <th class="text-center" scope="col">Fehca Inicial</th>
+                    <th class="text-center" scope="col">Fecha Final</th>
+                    <th class="text-center" scope="col">Precio</th>
+                    <th class="text-center" scope="col">Editar</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyFun">
+                @foreach (SeasonModel item in ViewBag.Season)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Season_Type</td>
+                        <td>@item.Start_Date.ToString("dd-MM-yyyy")</td>
+                        <td>@item.End_Date.ToString("dd-MM-yyyy")</td>
+                        <td>@item.Price</td>
+                        <td>
+                            <input type="image" class="btn" data-id="@item.Id" onclick="buscarSeason(@item.Id);" data-toggle="modal" data-target="#miModal" src="~/img/editar.png" height ="50" width="60" />
+                           
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="miModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Contenido del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Actualizar Temporadas</h5>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Admin" asp-action="EditSeason">
+                    <div class="m-1">
+                        <div class="row justify-content-center p-2 rounded">
+                            <label class="col-3">Codigo: </label>
+                            <input type="number" id="inputid" class="form-control col-6" asp-for="@Model.Id" readonly>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Tipo Temporada: </label>
+                            <input type="text" id="inputtipo" class="form-control col-6" asp-for="@Model.Season_Type" readonly>
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Inicio: </label>
+                            <input type="date" id="inputstart"  class="form-control col-6"  asp-for="@Model.Start_Date">
+                             <input id="hidden" type="hidden" name="fechaAporte" />
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Fecha Final: </label>
+                            <input type="date" id="inputend"  class="form-control col-6"  asp-for="@Model.End_Date">
+                        </div>
+                        <div class="row justify-content-center  p-2 rounded">
+                            <label class="col-3">Precio: </label>
+                            <input type="number" id="inputprice" class="form-control col-6" asp-for="@Model.Price">
+                        </div>
+                    </div>
+                    <div class=" float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancelar" />
+                        <input type="submit" id="actualizar" class="btn btn-primary" value="Actualizar" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //Fecha de hoy para todos los input
+    let now = new Date();
+    let day = ("0" + now.getDate()).slice(-2);
+    let month = ("0" + (now.getMonth() + 1)).slice(-2);
+    let today2 = now.getFullYear() + "-" + (month) + "-" + (day);
+    $("input[type=date]").val(today2);
+
+    //bloquear fechas para crear temporadas
+    let today = new Date().toISOString().split("T")[0];
+    $('#inputstart3').attr("min",today);
+    const hiddenInput = document.querySelector('#hidden3');
+    document.querySelector('#inputstart3')
+        .addEventListener('change', (event) => {
+            hiddenInput.value = event.target.value;
+		    $('#inputend3').val(hiddenInput.value);
+            $("#inputend3").attr("min", hiddenInput.value);        
+        });
+
+    //bloquear fechas segun la fecha inicio
+    const hiddenInput2 = document.querySelector('#hidden');
+    document.querySelector('#inputstart')
+        .addEventListener('change', (event) => {
+            hiddenInput2.value = event.target.value;
+            $('#inputend').val(hiddenInput.value);
+            $("#inputend").attr("min", hiddenInput2.value);
+ 
+        });       
+</script>

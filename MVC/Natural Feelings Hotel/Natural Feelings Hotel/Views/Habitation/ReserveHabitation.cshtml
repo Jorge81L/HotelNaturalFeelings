@@ -1,0 +1,115 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Natural_Feelings_Hotel.Models.ReservationModel
+@{
+    string ViewTitle = "Reservar en Linea";
+    ReservationModel reservation =
+    new ReservationModel
+            {
+                StartDate = ViewBag.Reservation.StartDate,
+                EndDate = ViewBag.Reservation.EndDate,
+                User = new UserModel(),
+                Habitation = new HabitationModel
+                {
+                    IdHabitation = ViewBag.Reservation.Habitation.IdHabitation,
+                    Image = new ImageModel
+                    {
+                        IdImage = ViewBag.Reservation.Habitation.Image.IdImage,
+                        ImageFormat = ViewBag.Reservation.Habitation.Image.ImageFormat
+                    },
+                    Rate = new RateModel
+                    {
+                        Id = ViewBag.Reservation.Habitation.Rate.Id,
+                        Name = ViewBag.Reservation.Habitation.Rate.Name,
+                        Features = ViewBag.Reservation.Habitation.Rate.Features,
+                        Price = ViewBag.Reservation.Habitation.Rate.Price,
+                        Season = new SeasonModel
+                        {
+                            Id = ViewBag.Reservation.Habitation.Rate.Season.Id,
+                            Season_Type = ViewBag.Reservation.Habitation.Rate.Season.Season_Type,
+                            Price = ViewBag.Reservation.Habitation.Rate.Season.Price
+                        }
+                    }
+                }
+            };
+
+    double totalPrice = reservation.Habitation.Rate.Price + reservation.Habitation.Rate.Season.Price;
+    string imageRoute = "/galery/" + reservation.Habitation.Image.IdImage + reservation.Habitation.Image.ImageFormat;
+}
+<div class="inner">
+    <div>
+        <header id="header">
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <a asp-action="" asp-controller="" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+        </header>
+    </div>
+    <div id="container" class="container">
+        <div class="row p-0 m-0">
+			<div class="col-12 text-center">
+				<h2 class="display-4">@ViewTitle</h2>
+			</div>
+		</div>
+        </br>
+        </br>
+        <form asp-controller="Habitation" asp-action="ReservationBill">
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-3 col-sm-12 text-center">
+                    <h5>Habitación disponible</h5>
+                    <img src="@imageRoute" style="width: 100%;" />
+                </div>
+                <div class="col-lg-9 col-sm-12">
+                    <p class="my-auto">
+                        @reservation.Habitation.Rate.Features
+                    </p>
+                </div>
+            </div>
+            </br>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="idHabitation" class="col-lg-5 col-sm-12 my-auto p-0">Habitación número:</label>
+                    <input type="number" id="idHabitation" class="form-control col-lg-2 col-sm-12 m-auto p-0 text-center" asp-for="@Model.Habitation.IdHabitation" value="@reservation.Habitation.IdHabitation" readonly/>
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="monto" class="col-lg-5 col-sm-12 my-auto p-0">Tarifa(@reservation.Habitation.Rate.Name) + temporada(@reservation.Habitation.Rate.Season.Season_Type): @reservation.Habitation.Rate.Price + @reservation.Habitation.Rate.Season.Price</label>
+                    <input type="text" id="monto" class="form-control col-lg-2 col-sm-12 p-0" value="$@totalPrice" disabled />
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="nombre" class="col-lg-4 col-sm-12 my-auto p-0">Nombre:</label>
+                    <input type="text" id="nombre" class="form-control col-lg-8 col-sm-12 m-auto p-0" asp-for="@Model.User.Name" required />
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="apellidos" class="col-lg-4 col-sm-12 my-auto p-0">Apellidos:</label>
+                    <input type="text" id="apellidos" class="form-control col-lg-8 col-sm-12 m-auto p-0" asp-for="@Model.User.LastName" required/>
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="email" class="col-lg-4 col-sm-12 my-auto p-0">Email:</label>
+                    <input type="email" id="email" class="form-control col-lg-8 col-sm-12 m-auto p-0" asp-for="@Model.User.EmailAddress" required/>
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 my-2 row">
+                    <label for="tarjeta" class="col-lg-4 col-sm-12 my-auto p-0">Tarjeta de credito:</label>
+                    <input type="text" id="tarjeta" class="form-control col-lg-8 col-sm-12 m-auto p-0" asp-for="@Model.User.CreditCard.CardNumber" required/>
+                </div>
+            </div>
+            <div class="row p-0 m-0 my-2">
+                <div class="col-lg-6 col-sm-12 text-center my-2">
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#reservationModal">Aceptar</button>
+                    <button type="reset" class="btn btn-secondary">Cancelar</button>
+                </div>
+            </div>
+            
+            <input type="date" id="startDate" asp-for="@Model.StartDate" value="@reservation.StartDate.ToString("yyyy-MM-dd")" hidden />
+            <input type="date" id="endDate" asp-for="@Model.EndDate" value="@reservation.EndDate.ToString("yyyy-MM-dd")" hidden />
+        </form>
+    </div>
+</div>

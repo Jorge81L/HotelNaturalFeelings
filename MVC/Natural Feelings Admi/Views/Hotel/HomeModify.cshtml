@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@{
+    string ViewTitle = "Home";
+    Hotel hotelAPI = new Hotel();
+    HotelModel hotelModel = hotelAPI.GetHotel().GetAwaiter().GetResult();
+}
+<div class="inner">
+    <div>
+        <div class="row p-0 m-0">
+            <div class="col-12 text-center">
+                <h2 class="display-4">@ViewTitle</h2>
+            </div>
+        </div>
+    </div>
+    <div>
+        <form asp-action="UpdateHome" asp-controller="Hotel" method="post" enctype="multipart/form-data" runat="server">
+            <div class="row row-cols-sm-1">
+                <div class="col-lg-12 col-sm-12">
+                    <textarea class="form-control" id="description" rows="10" cols="50" asp-for="@hotelModel.Description">@hotelModel.Description</textarea>
+                </div>
+                <div class="row my-2 p-0">
+                    <div class="col-lg-6 col-sm-12">
+                        <label for="image" class="row m-auto justify-content-center">Imagen actual</label>
+                        <img id="img" class="align-content-center" src="~/img/HomeImg/@Html.DisplayFor(modelItem => hotelModel.Image.IdImage)@Html.DisplayFor(modelItem => hotelModel.Image.ImageFormat)" style="width: 100%">
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <label class="col-lg-12">Subir imagen: </label>
+                        <div class="custom-file">
+                            <input type="file" runat="server" class="p-0 custom-file-input col-lg-12" id="imageName" asp-for="@hotelModel.Image.ImageForm">
+                            <label class="custom-file-label form-control-lg col-lg-12" for="imageName">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row  float-right">
+                    <button type="reset" class="btn btn-secondary col-lg-5 mx-1 my-1" onclick="CancelModify()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary col-lg-5 mx-1 my-1" onclick="ConfirmeModify()">Guardar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+<script>
+    function ConfirmeModify() {
+
+        $('#ModalSave').modal({ backdrop: 'static', keyboard: false })
+        $('#ModalSave').modal('show');
+    }
+</script>
+<script>
+    function CancelModify() {
+
+        $('#ModalCancel').modal({ backdrop: 'static', keyboard: false })
+        $('#ModalCancel').modal('show');
+    }
+</script>
+<script>
+    function redirectHomeScreen() {
+        window.location.href = '/Home/HomeView';
+    }
+</script>
+
+<script language="JavaScript">
+    function readURL3(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#img').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imageName").change(function() {
+        readURL3(this);
+    });
+</script>
+
+<div id="ModalCancel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>¿Seguro que deseas cancelar?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="m-1">
+                    <div class="row justify-content-center">
+                        <p>Si cancelas te redireccionará a la página principal</p>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" value="">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="redirectHomeScreen()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ModalSave" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Home</h5>
+            </div>
+            <div class="modal-body">
+                <div class="m-1">
+                    <div class="row justify-content-center">
+                        <p>La descripcion del home fue editada exitosamente</p>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-primary" onclick="redirectHomeScreen()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

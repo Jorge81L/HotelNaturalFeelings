@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Ver estado del hotel";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@using Natural_Feelings_Hotel_API.Models
+@model Natural_Feelings_Hotel_API.Models.TodayStatusModel
+
+@{
+    Hotel hotelAPI = new Hotel();
+    List<TodayStatusModel> todayStatusModelList = hotelAPI.GetTodayStatus().GetAwaiter().GetResult();
+    string ViewTitle = "Estado del Hotel";
+    string rate = "";
+    string status = "";
+}
+<div class="inner">
+    <div>
+        <div class="row p-0 m-0">
+            <div class="col-12 text-center">
+                <h2 class="display-4">@ViewTitle</h2>
+            </div>
+        </div>
+
+        <div class="row p-0 mt-2">
+            <div class="col-12 text-center">
+                <b>Fecha: @DateTime.Now.ToString("dd-MM-yyyy")</b>
+            </div>
+        </div>
+
+        <div class="row p-0 mt-2">
+            <form id="AmpliacionesContainer" class="container" asp-controller="Hotel">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Numero de Habitacion</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in todayStatusModelList)
+                    {
+                       
+                        @if (String.Compare(item.Status, "TRUE") != 0)
+                        {
+                            status = "Disponible";
+                        }
+                        else
+                        {
+                            status = "Ocupado";
+                        }
+                        <tbody>
+                            <tr>
+                                <th scope="row">@Html.DisplayFor(modelItem => item.ID_Habitation)</th>
+                                <th>@Html.DisplayFor(modelItem => item.ID_Rate)</th>
+                                <th>@status</th>
+                            </tr>
+                        </tbody>
+                    }
+                </table>
+                <div class="align-center">
+                 <input type="image" class="btn" asp-action="PDFReporte" src="~/img/reporte.png" formtarget="_blank" height ="100" width="100"/>
+                 </div>
+            </form>
+        </div>
+    </div>
+
+</div>

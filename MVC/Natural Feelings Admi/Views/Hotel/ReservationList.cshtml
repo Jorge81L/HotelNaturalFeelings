@@ -1,0 +1,46 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    ViewData["Title"] = "Listado de reservaciones";
+}
+
+<div class="container">
+    <div class="row p-0 m-0">
+        <div class="col-12 text-center">
+            <h4 class="display-4">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="row p-0 m-0">
+        <div class="col-12 text-center">
+            <div class="table-responsive bg-white m-2">
+                <table id="RateTable" class="table table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Número de reservación</th>
+                            <th class="text-center" scope="col">Habitación</th>
+                            <th class="text-center" scope="col">Inicio</th>
+                            <th class="text-center" scope="col">Fin</th>
+                            <th class="text-center" scope="col">Usuario</th>
+                            <th class="text-center" scope="col">Correo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaOfertas">
+                        @foreach (ReservationModel item in ViewBag.reservations)
+                        {
+                            <tr>
+                                <td>@item.IdReservation</td>
+                                <td>@item.Habitation.IdHabitation</td>
+                                <td>@item.StartDate.ToString("dd-MM-yyyy")</td>
+                                <td>@item.EndDate.ToString("dd-MM-yyyy")</td>
+                                <td>@item.User.Name @item.User.LastName</td>
+                                <td>@item.User.EmailAddress</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

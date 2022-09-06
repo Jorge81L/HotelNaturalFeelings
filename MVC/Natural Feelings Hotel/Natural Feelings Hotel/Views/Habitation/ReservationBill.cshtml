@@ -1,0 +1,36 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+	string ViewTitle = "Reservar en Linea";
+}
+<div class="inner">
+	<div>
+		<header id="header">
+			<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+			<a asp-action="" asp-controller="" class="logo"> <img src="~/img/Logo Natural Feelings.png" width="100" height="100"> <strong>Hotel</strong> - Natural Feelings</a>
+		</header>
+	</div>
+	@if(ViewBag.Reservation.IdReservation == 0){
+		<p>Ocurrió un error, por favor contactenos para darle una solución</p>
+	}
+	else
+	{
+		<div class="row p-0 m-0">
+			<div class="col-12">
+				<h2 class="display-4">@ViewTitle</h2>
+			</div>
+		</div>
+		<div class="row p-0 m-0 my-2">
+			<p>Reservación realizada!</p>
+		</div><div class="row p-0 m-0 my-2">
+			<p>Gracias @ViewBag.Reservation.User.Name !! Su reservación fue realizada exitosamente.</p>
+		</div><div class="row p-0 m-0 my-2">
+			<p>Numero de reservación: @ViewBag.Reservation.IdReservation</p>
+		</div><div class="row p-0 m-0 my-2">
+			<p>Acabamos de enviar esta información a la dirección @ViewBag.Reservation.User.EmailAddress para mayor facilidad</p>
+		</div><div class="row p-0 m-0 my-2">
+			<p>Gracias por preferirnos!</p>
+		</div>
+	}
+</div>

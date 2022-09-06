@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Modificar paginas";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@model Natural_Feelings_Admi.Models.SeasonModel
+@{
+    string ViewTitle = "Modificar paginas";
+}
+
+<div class="inner">
+    <div>
+        <div class="row p-0 m-0">
+            <div class="col-12 text-center">
+                <h2 class="display-4">@ViewTitle</h2>
+            </div>
+        </div>
+        <div class="row p-0 mt-5">
+            <div class="col-12 text-center">
+                <h3>Seleccione la pagina que desea modificar</h3>
+            </div>
+        </div>
+        <div class="row p-0 mt-5">
+            <div class="col-6">
+                 <a asp-controller="Hotel" asp-action="HomeModify" class="list-group-item list-group-item-action">Inicio</a>
+                 <a asp-controller="Hotel" asp-action="AboutUS" class="list-group-item list-group-item-action">Sobre Nosotros</a>
+                 <a asp-controller="Hotel" asp-action="Facilities" class="list-group-item list-group-item-action">Facilidades</a>
+                 <a asp-controller="Hotel" asp-action="Adress" class="list-group-item list-group-item-action">Como llegar</a>
+            </div>
+        </div>
+    </div>
+</div>

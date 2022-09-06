@@ -1,0 +1,19 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@model Natural_Feelings_Admi.Models.AdmiModel
+@{
+	Hotel homeAPI = new Hotel();
+	HotelModel homeModel = homeAPI.ReadHome().GetAwaiter().GetResult();
+}
+<div class="inner">
+
+	<div class="text-center">
+        <p class="display-4 align-content-center">Parte Administrativa</p>
+		<p class="display-4 align-content-center">Hotel Natural Feelings</p>
+    </div>
+
+</div>
+

@@ -1,0 +1,352 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Natural_Feelings_Admi.Models.RoomModel
+@{
+    var ViewTitle = "Administrar Habitaciones";
+}
+<div class="inner">
+    <div class="text-center">
+        <h3 class="display-5">@ViewTitle</h3><br>
+        <div id="alert" class="alert" role="alert" hidden>
+            <a id="response"></a>
+        </div>
+        @if (ViewBag.Response != null)
+        {
+            @if (ViewBag.Response == true)
+            {
+                <div id="alert" class="alert" role="alert" hidden>
+                    <a>Habitación actualizada con éxito</a>
+                </div>
+            }
+            else
+            {
+                <div id="alert" class="alert" role="alert" hidden>
+                    <a>Ocurrió un error al actualizar la habitación</a>
+                </div>
+            }
+        }
+    </div>
+    <div class="container">
+        <div class="row row-cols-lg-3 row-cols-sm-1 justify-content-center">
+            @foreach (RateModel rate in ViewBag.Rates)
+            {
+                <div class="col-lg-3 col-sm-12 mx-2">
+                    <div class="table-responsive text-center">
+                        <h3>@rate.Name <input type="image" class="btn p-0 m-0" onclick="modificarRate(@rate.Id)" src="~/img/editar.png" width="30" height="30" data-toggle="modal" data-target="#modalRate"></h3>
+
+                        <table class="table table-hover table-bordered" style="max-height: 400px; overflow: auto;">
+                            <thead>
+                                <tr>
+                                    <th>Habitación</th>
+                                    <th>Estado</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (RoomModel room in ViewBag.Rooms)
+                                {
+                                    @if (room.Rate.Id == rate.Id)
+                                    {
+                                        <tr>
+                                            <td>@room.IdHabitation</td>
+                                            <td class="text-center">
+                                                <form class="form">
+                                                    <input type="checkbox" class="form-check-input" onclick="modificarEstado(@room.IdHabitation);" checked="@room.IsActive" />
+                                                </form>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="image" class="btn p-0 m-auto" onclick="modificarHabitacion(@room.IdHabitation)" src="~/img/editar.png" width="30" height="30" data-toggle="modal" data-target="#modalRoom" />
+                                            </td>
+                                        </tr>
+                                    }//if
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Modal Rates-->
+    <div class="modal fade" id="modalRate" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="InfoModalLabel">@ViewTitle</h2>
+                </div>
+                <form asp-controller="Room" asp-action="UpdateRate" method="post" enctype="multipart/form-data" runat="server">
+                    <div class="modal-body border-0">
+                        <div class="container">
+                            <div class="row my-2 p-0">
+                                <div class="col-3 m-auto">
+                                    <input type="number" id="idRateSelected" name="Id" hidden />
+                                    <label id="rateName" class="m-auto"></label>
+                                    <input type="text" id="idRateImage" asp-for="Image.IdImage" hidden/>
+                                </div>
+                                <div class="col-9 row p-0">
+                                    <div class="col-6 m-auto">
+                                        <label class="m-auto">Tarifa diaria $:</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="number" id="ratePrice" class="form-control m-auto" name="Price" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-0">
+                                <textarea class="form-control" id="rateDescription" rows="5" cols="50" name="Description">
+                            </textarea>
+                            </div>
+                            <div class="row my-2 p-0">
+                                <div class="col-4 text-center">
+                                    <label for="imageRate" class="">
+                                        Imagen actual
+                                    </label>
+                                    <img id="imageRate" class="row m-auto" src="~/assets/select.svg" style="border-style: dotted; width: 100%" />
+                                </div>
+                                <div class="col-8 m-auto">
+                                    <label class="custom-file-label form-control-lg" for="rateImage">Nueva imagen</label>
+                                    <input type="file" runat="server" class="p-0 custom-file-input" id="rateImage" asp-for="Image.ImageForm" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Room -->
+    <div class="modal fade" id="modalRoom" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="InfoModalLabel">Actualizar habitación</h2>
+                </div>
+                <form asp-controller="Room" asp-action="UpdateRoom" method="post" enctype="multipart/form-data" runat="server">
+                    <div class="modal-body border-0">
+                        <div class="container">
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-2 text-center my-auto d-inline-flex">
+                                    <p class="m-auto">ID: </p>
+                                    <p id="idRoomSelected" class="text-success m-auto"></p>
+                                    <input type="number" id="idRoom" asp-for=@Model.IdHabitation hidden />
+                                    <input type="text" id="idRoomImage" asp-for=@Model.Image.IdImage hidden />
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center my-auto">
+                                    <label for="location" class="">Ubicación</label>
+                                </div>
+                                <div class="col-8 text-center">
+                                    @*<input type="text" class="form-control" id="location" />*@
+                                    <textarea class="form-control" id="location" rows=4 asp-for=@Model.Location></textarea>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center my-auto">
+                                    <label for="rate" class="">Categoría</label>
+                                </div>
+                                <div id="divSelect" class="col-8 text-center">
+                                    <select id="selectRate" class="form-control" asp-for=@Model.Rate.Id>
+                                        @foreach (RateModel rate in ViewBag.Rates)
+                                        {
+                                            <option value=@rate.Id>@rate.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row my-2 p-1 justify-content-center bg-light">
+                                <div class="col-4 text-center">
+                                    <label for="imageRoom" class="">
+                                        Imagen actual
+                                    </label>
+
+                                    <img id="imageRoom" class="row m-auto" src="~/assets/select.svg" alt="Imagen de habitación" style="border-style: dotted; width: 100%" />
+                                </div>
+                                <div class="col-8 m-auto">
+                                    <label class="custom-file-label form-control-lg" for="roomImage">Nueva imagen</label>
+                                    <input type="file" runat="server" class="p-0 custom-file-input" id="roomImage" asp-for=@Model.Image.ImageForm />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const modificarEstado = (idRoom) =>
+        {
+            let parametros = {
+                "IdHabitation": idRoom
+            }
+            $.ajax({
+                data: parametros,
+                url: '/Room/UpdateRoomState',
+                type: 'post',
+                success: function (response) {
+                    $('#alert').removeAttr("hidden")
+                    $('#alert').removeClass("alert-primary")
+                    $('#alert').removeClass("alert-danger")
+
+                    if(response){
+                        $("#response").text("Estado actualizado")
+                        $("#alert").addClass("alert-primary")
+                    }else{
+                        $("#response").text("Ocurrió un error")
+                        $("#alert").addClass("alert-danger")
+                    }
+                    setTimeout(() => $('#alert').attr("hidden", true), 3000)
+                },
+                error: function () {
+                    $('#alert').removeAttr("hidden")
+                    $("#response").text("Ocurrió un error de conexión")
+                    $("#alert").addClass("alert-danger")
+                }
+            });
+        };//modificarEstado
+
+        const modificarRate = (idRate) => {
+            let parametros = {
+                "Id": idRate
+            }
+            $.ajax({
+                data: parametros,
+                url: '/Room/GetRateById',
+                type: 'post',
+                success: function (response) {
+                    if (response.id == 0) {
+                        console.log("Los sentimos, ocurrio un error :(");
+                    } else {
+                        $("#idRateSelected").val(response.id)
+                        $("#rateName").text(response.name);
+                        $("#ratePrice").val(response.price);
+                        $("#rateDescription").val(response.description);
+                        $("#idRateImage").val(response.image.idImage);
+                        $("#imageRate").attr('src', '/img/'+response.image.idImage+response.image.imageFormat);
+                    }
+                },
+                error: function () {
+                    console.log("Error de conexion");
+                }
+            });
+        };//modificarRate
+
+        const modificarHabitacion = (idRoom) => {
+            let parametros = {
+                "IdHabitation": idRoom
+            }
+            let selectRate = document.getElementById('#selectRate');
+            $.ajax({
+                data: parametros,
+                url: '/Room/GetRoomById',
+                type: 'post',
+                success: function (response) {
+                    if (response.idHabitation == 0) {
+                        console.log("Los sentimos, ocurrio un error :(");
+                    } else {
+                    console.log(response.image)
+                        $("#idRoomSelected").text(response.idHabitation)
+                        $("#idRoom").val(response.idHabitation)
+                        $("#location").val(response.location);
+                        $('#selectRate').val(response.rate.id);
+                        $("#idRoomImage").val(response.image.idImage);
+                        $("#imageRoom").attr('src', '/img/'+response.image.idImage+response.image.imageFormat);
+                    }
+                },
+                error: function () {
+                    console.log("Error de conexion");
+                }
+            });
+        };//modificarRate
+
+        const actualizarCategoria = () => {
+            let parametros = {
+                "Id": parseInt($("#idRateSelected").val()),
+                "Name": $("#rateName").val(),
+                "Description" : $("#rateDescription").val(),
+                "Price" : parseInt($("#ratePrice").val()),
+                "Image" : $("#image").val()
+
+            }
+            $.ajax({
+                data: parametros,
+                url: '/Room/UpdateRate',
+                type: 'post',
+                success: function (response) {
+                    if (!response) {
+                        console.log("Los sentimos, ocurrio un error :(");
+                    } else {
+                        console.log("Listo");
+                    }
+                },
+                error: function () {
+                    console.log("Error de conexion");
+                }
+            });
+        };//actualizarCategoria
+
+        const actualizarHabitacion = () => {
+            let parametros = {
+                "Id": parseInt($("#idRateSelected").val()),
+                "Name": $("#rateName").val(),
+                "Description" : $("#rateDescription").val(),
+                "Price" : parseInt($("#ratePrice").val()),
+                "Image" : $("#image").val()
+
+            }
+            $.ajax({
+                data: parametros,
+                url: '/Room/UpdateRate',
+                type: 'post',
+                success: function (response) {
+                    if (!response) {
+                        console.log("Los sentimos, ocurrio un error :(");
+                    } else {
+                        console.log("Listo");
+                    }
+                },
+                error: function () {
+                    console.log("Error de conexion");
+                }
+            });
+        };//actualizarCategoria
+
+        const readURL = (input) => {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imageRate').attr('src', e.target.result);
+                    $('#imageRoom').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };//readURL
+
+        $("#rateImage").change(function () {
+            $('#idRateImage').val("changed")
+            readURL(this);
+        });
+        $("#roomImage").change(function () {
+            $('#idRoomImage').val("changed")
+            readURL(this);
+        });
+    </script>
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+</div>

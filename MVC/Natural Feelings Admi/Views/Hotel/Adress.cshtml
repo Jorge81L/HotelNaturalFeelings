@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Como llegar";
+}
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+@{
+    string ViewTitle = "Como llegar";
+    Hotel hotelAPI = new Hotel();
+    HotelModel hotelModel = hotelAPI.GetHotel().GetAwaiter().GetResult();
+}
+<div class="inner">
+    <div>
+        <div class="row p-0 m-0">
+            <div class="col-12 text-center">
+                <h2 class="display-4">@ViewTitle</h2>
+            </div>
+        </div>
+
+        <div class="row p-0 mt-2">
+            <div class="col-12 text-center">
+            </div>
+        </div>
+
+        <div class="row my-2 p-0">
+            <textarea class="form-control" id="adress" rows="5" cols="50">@hotelModel.Adress</textarea>
+        </div>
+
+
+        <div class="row  float-right">
+            <button type="button" class="btn btn-secondary mx-1" data-toggle="modal" data-target="#ModalCancel">Cancelar</button>
+            <button type="button" class="btn btn-primary mx-1" onclick="modifyAdress()">Guardar</button>
+        </div>
+    </div>
+    <script>
+        function modifyAdress() {
+            let Adress = $("#adress").val();
+
+            let param = {
+                "Adress": Adress
+            }
+            $.ajax({
+                data: param,
+                url: '/Hotel/UpdateAdress',
+                type: 'put',
+                success: function(response) {
+                    console.log("response" + response);
+                    if (response) {
+                        $('#ModalSave').modal({ backdrop: 'static', keyboard: false })
+                        $('#ModalSave').modal('show');
+                    }
+                },
+                error: function() {
+                    console.log("Error");
+                }
+            });
+        }
+    </script>
+    <script>
+        function redirectHomeScreen() {
+            window.location.href = '/Home/HomeView';
+        }
+    </script>
+</div>
+
+<div id="ModalCancel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>¿Seguro que deseas cancelar?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="m-1">
+                    <div class="row justify-content-center">
+                        <p>Si cancelas te redireccionará a la página principal</p>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" value="">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="redirectHomeScreen()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ModalSave" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Como llegar</h5>
+            </div>
+            <div class="modal-body">
+                <div class="m-1">
+                    <div class="row justify-content-center">
+                        <p>La descripcion de "como llegar" fue editada exitosamente</p>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <button type="button" class="btn btn-primary" onclick="redirectHomeScreen()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

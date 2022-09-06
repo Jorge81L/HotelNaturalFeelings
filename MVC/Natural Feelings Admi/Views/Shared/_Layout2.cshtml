@@ -1,0 +1,77 @@
+﻿<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net |
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+@using Microsoft.AspNetCore.Http
+@using Natural_Feelings_Admi.API
+<head>
+    <title>Natural Feelings</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script type="text/javascript" src="~/js/Funciones.js"></script>
+    <script type="text/javascript">
+        function changeImage1(){
+            $('#probando').html('<img src="/galery/paseo.jpg" style="width:100%">');
+        }
+        function changeImage2(){
+            $('#probando').html('<img src="/galery/paseo2.jpg" style="width:100%">');
+        }
+        function changeImage3(){
+            $('#probando').html('<img src="/galery/rio.jpg" style="width:100%">');
+        }
+        function changeImage4(){
+            $('#probando').html('<img src="/galery/bungee.jpg" style="width:100%">');
+        }
+        function changeImage5(){
+            $('#probando').html('<img src="/galery/bungee2.jpg" style="width:100%">');
+        }
+        function changeImage6(){
+            $('#probando').html('<img src="/galery/rafting.jpg" style="width:100%">');
+        }
+        function changeImage7(){
+            $('#probando').html('<img src="/galery/termal.jpg" style="width:100%">');
+        }
+        function changeImage8(){
+            $('#probando').html('<img src="/galery/termal2.jpg" style="width:100%">');
+        }
+    </script>
+    <script type="text/javascript" language="javascript">
+        function noBack() {
+            window.history.forward()
+        }
+        noBack();
+        window.onload = noBack;
+        window.onpageshow = function (evt) { if (evt.persisted) noBack(); }
+        window.onunload = function () { void (0); }
+    </script>
+</head>
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<div id="main">
+			@RenderBody()
+
+		</div>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="~/js/jquery.min.js"></script>
+	<script src="~/js/browser.min.js"></script>
+	<script src="~/js/breakpoints.min.js"></script>
+	<script src="~/js/util.js"></script>
+	<script src="~/js/main.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@RenderSection("Scripts", required: false)
+</body>
+</html>
